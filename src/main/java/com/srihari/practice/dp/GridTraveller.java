@@ -5,39 +5,44 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GridTraveller {
 
-    private static final Logger logger = LoggerFactory.getLogger(GridTraveller.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(GridTraveller.class.getName());
 
-    public static BigInteger findNumberOfPathsRecursive(int row, int column) {
-        if(row == 0 ||  column == 0) {
+    public static BigInteger findNumberOfPathsRecursive(int rows, int columns) {
+        if(rows == 0 ||  columns == 0) {
             return BigInteger.ZERO;
-        } else if(row == 1 && column == 1) {
+        } else if(rows == 1 && columns == 1) {
             return BigInteger.ONE;
         } else {
-            BigInteger right = findNumberOfPathsRecursive(row, column-1);
-            BigInteger down = findNumberOfPathsRecursive(row-1, column);
+            BigInteger right = findNumberOfPathsRecursive(rows, columns-1);
+            BigInteger down = findNumberOfPathsRecursive(rows-1, columns);
             return right.add(down);
         }
     }
 
-    public static BigInteger findNumberOfPathsMemoized(int rows, int columns) {
-        BigInteger[][] memo = new BigInteger[rows][columns];
-
-        for(int i=0; i<rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                // 1-D Array case
-                if (i == 0 || j == 0) {
-                    memo[i][j] = BigInteger.ONE;
-                } else {
-                    BigInteger pathsPostMovingRight = memo[i][j-1];
-                    BigInteger pathsPostMovingDown = memo[i-1][j];
-                    memo[i][j] = pathsPostMovingDown.add(pathsPostMovingRight);
-                }
-            }
+    public static BigInteger findNumberOfPathsMemoized(int rows, int columns, Map<String, BigInteger> memo) {
+        String memoKey = String.format("%d,%d", rows, columns);
+        if(memo == null) {
+            memo = new HashMap<>();
         }
-        return memo[rows-1][columns-1];
+
+        if(rows == 0 ||  columns == 0) {
+            return BigInteger.ZERO;
+        } else if(rows == 1 && columns == 1) {
+            return BigInteger.ONE;
+        } else if(memo.containsKey(memoKey)) {
+            return memo.get(memoKey);
+        } else {
+            BigInteger right = findNumberOfPathsMemoized(rows, columns-1, memo);
+            BigInteger down = findNumberOfPathsMemoized(rows-1, columns, memo);
+            BigInteger result = right.add(down);
+            memo.put(memoKey, result);
+            return result;
+        }
     }
     public static void main(String[] args) {
 
@@ -46,12 +51,12 @@ public class GridTraveller {
 
         Timer.timed(() -> {
             BigInteger paths = findNumberOfPathsRecursive(rows, columns);
-            logger.info("Recursive: Found {} paths to traverse for {}x{} grid", paths, rows, columns);
+            LOGGER.info("Recursive: Found {} paths to traverse for {}x{} grid", paths, rows, columns);
         });
 
         Timer.timed(() -> {
-            BigInteger paths = findNumberOfPathsMemoized(rows, columns);
-            logger.info("Memoized: Found {} paths to traverse for {}x{} grid", paths, rows, columns);
+            BigInteger paths = findNumberOfPathsMemoized(rows, columns, null);
+            LOGGER.info("Memoized: Found {} paths to traverse for {}x{} grid", paths, rows, columns);
         });
     }
 }

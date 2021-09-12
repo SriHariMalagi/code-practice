@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class Fibonacci {
 
-    private static Logger logger = LoggerFactory.getLogger(Fibonacci.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(Fibonacci.class.getName());
 
     private static BigInteger recursiveFibonacci(int n) {
         if(n <= 2) {
@@ -20,15 +20,19 @@ public class Fibonacci {
         }
     }
 
-    private static BigInteger memoizedFibonacci(int n) {
-        Map<Integer, BigInteger> memo = new HashMap<>();
-        memo.put(0, BigInteger.ONE);
-        memo.put(1, BigInteger.ONE);
-        for(int i=2; i<n; i++) {
-            BigInteger result = memo.get(i-1).add(memo.get(i-2));
-            memo.put(i, result);
+    private static BigInteger memoizedFibonacci(int n, Map<Integer, BigInteger> memo) {
+        if(memo == null) {
+            memo = new HashMap<>();
         }
-        return memo.get(n-1);
+        if(n <= 2) {
+            return BigInteger.ONE;
+        } else if(memo.containsKey(n)) {
+            return memo.get(n);
+        } else {
+            BigInteger result = memoizedFibonacci(n-1, memo).add(memoizedFibonacci(n-2, memo));
+            memo.put(n, result);
+            return result;
+        }
     }
 
     public static void main(String[] args) {
@@ -36,11 +40,11 @@ public class Fibonacci {
         int input = 50;
         Timer.timed(() -> {
             BigInteger result = recursiveFibonacci(input);
-            logger.info("Recursive function: Fib({}) = {}", input, result);
+            LOGGER.info("Recursive function: Fib({}) = {}", input, result);
         });
         Timer.timed(() -> {
-            BigInteger result = memoizedFibonacci(input);
-            logger.info("Memoized function: Fib({}) = {}", input, result);
+            BigInteger result = memoizedFibonacci(input, null);
+            LOGGER.info("Memoized function: Fib({}) = {}", input, result);
         });
     }
 
