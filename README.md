@@ -5,4 +5,4 @@ Trying out and honing DS &amp; Algorithms skills
 ## Dynamic Programming
 Link to training can be found [here](https://www.youtube.com/watch?v=oBt53YbR9Kk).
 * [Fibonacci Problem](https://github.com/SriHariMalagi/code-practice/blob/main/src/main/java/com/srihari/practice/dp/Fibonacci.java)
-* [Grid Traveller Problem](https://github.com/SriHariMalagi/code-practice/blob/main/src/main/java/com/srihari/practice/dp/GridTrveller.java)
+* [Grid Traveller Problem](https://github.com/SriHariMalagi/code-practice/blob/main/src/main/java/com/srihari/practice/dp/GridTraveller.java)
