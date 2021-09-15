@@ -1,18 +1,12 @@
 package com.srihari.practice.dp;
 
-import com.srihari.practice.dp.utils.Timer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
 public class GridTraveller {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GridTraveller.class.getName());
-
-    public static BigInteger findNumberOfPathsRecursive(int rows, int columns) {
+    public BigInteger findNumberOfPathsRecursive(int rows, int columns) {
         if(rows == 0 ||  columns == 0) {
             return BigInteger.ZERO;
         } else if(rows == 1 && columns == 1) {
@@ -24,12 +18,8 @@ public class GridTraveller {
         }
     }
 
-    public static BigInteger findNumberOfPathsMemoized(int rows, int columns, Map<String, BigInteger> memo) {
+    private BigInteger findNumberOfPathsMemoized(int rows, int columns, Map<String, BigInteger> memo) {
         String memoKey = String.format("%d,%d", rows, columns);
-        if(memo == null) {
-            memo = new HashMap<>();
-        }
-
         if(rows == 0 ||  columns == 0) {
             return BigInteger.ZERO;
         } else if(rows == 1 && columns == 1) {
@@ -44,19 +34,9 @@ public class GridTraveller {
             return result;
         }
     }
-    public static void main(String[] args) {
 
-        int rows = 18;
-        int columns = 18;
-
-        Timer.timed(() -> {
-            BigInteger paths = findNumberOfPathsRecursive(rows, columns);
-            LOGGER.info("Recursive: Found {} paths to traverse for {}x{} grid", paths, rows, columns);
-        });
-
-        Timer.timed(() -> {
-            BigInteger paths = findNumberOfPathsMemoized(rows, columns, null);
-            LOGGER.info("Memoized: Found {} paths to traverse for {}x{} grid", paths, rows, columns);
-        });
+    public BigInteger findNumberOfPathsMemoized(int rows, int columns) {
+        Map<String, BigInteger> memo = new HashMap<>();
+        return findNumberOfPathsMemoized(rows, columns, memo);
     }
 }
